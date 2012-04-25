@@ -2,3 +2,10 @@
 # The logic to start up your application should be put in this
 # script. The application will work only if it binds to
 # $OPENSHIFT_INTERNAL_IP:8080
+
+set -e
+
+cat $OPENSHIFT_LOG_DIR/$OPENSHIFT_APP_NAME.log || :
+xargs -r kill <$OPENSHIFT_RUN_DIR/$OPENSHIFT_APP_NAME.pid || :
+nohup $OPENSHIFT_REPO_DIR/hello/hello $OPENSHIFT_INTERNAL_IP:8080 >$OPENSHIFT_LOG_DIR/$OPENSHIFT_APP_NAME.log 2>&1 </dev/null &
+echo $! >$OPENSHIFT_RUN_DIR/$OPENSHIFT_APP_NAME.pid

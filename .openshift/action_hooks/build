@@ -3,3 +3,17 @@
 # available.  Otherwise it will execute while your application is stopped
 # before the deploy step.  This script gets executed directly, so it
 # could be python, php, ruby, etc.
+
+set -e
+
+# Prepare the runtime
+[ -d $OPENSHIFT_RUNTIME_DIR/go ] ||
+	curl  http://go.googlecode.com/files/go.go1.linux-amd64.tar.gz |
+	tar xzf - -C $OPENSHIFT_RUNTIME_DIR
+
+export GOROOT=$OPENSHIFT_RUNTIME_DIR/go
+export PATH=$PATH:$GOROOT/bin
+
+cd $OPENSHIFT_REPO_DIR
+cd hello
+go build
